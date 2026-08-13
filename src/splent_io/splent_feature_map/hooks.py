@@ -6,11 +6,14 @@ contact page (`contact.map`); any feature can open another slot and this
 feature can register into it without either knowing the other's internals.
 
 The provider is configuration, not markup: templates/map/embed.html decides
-what to draw from MAP_PROVIDER, so a product moves from the Google embed to
-OpenStreetMap (or whatever comes next) without touching a template.
+what to draw from the provider setting, so a product moves from the Google
+embed to OpenStreetMap (or whatever comes next) without touching a template.
+Behaviour comes from the framework's declarative settings schema
+(get_config("map")): the admin panel wins, the MAP_* environment variables
+are the fallback.
 """
 
-from flask import current_app, render_template
+from flask import render_template
 
 from splent_framework.hooks.template_hooks import register_template_hook
 
@@ -21,10 +24,12 @@ def contact_map():
     Renders nothing when the product configures no place, so installing the
     feature without configuring it changes nothing.
     """
-    cfg = current_app.config
-    if not (cfg.get("MAP_QUERY") or (cfg.get("MAP_LAT") and cfg.get("MAP_LNG"))):
+    from splent_framework.settings.settings_schema import get_config
+
+    cfg = get_config("map")
+    if not (cfg.get("query") or (cfg.get("lat") and cfg.get("lng"))):
         return ""
-    return render_template("map/embed.html")
+    return render_template("map/embed.html", cfg=cfg)
 
 
 register_template_hook("contact.map", contact_map)

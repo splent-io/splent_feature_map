@@ -1,23 +1,24 @@
-{# The embedded map, provider decided by configuration.
+{# The embedded map, provider decided by configuration. Rendered by the
+   contact.map hook with:
+     cfg : get_config("map") -> provider / query / lat / lng / zoom / address
 
    google: a keyless place-search embed, the same one the classic WordPress
    sites use. openstreetmap: a keyless marker embed by coordinates. Both are
    plain iframes, so the page stays static and no script runs until the
    reader scrolls the frame into view (lazy loading). #}
-{% set provider = config.get('MAP_PROVIDER', 'google') %}
 <section class="map-embed">
-    {% if provider == 'openstreetmap' and config.get('MAP_LAT') and config.get('MAP_LNG') %}
-    {% set lat = config.get('MAP_LAT') %}{% set lng = config.get('MAP_LNG') %}
+    {% if cfg.provider == 'openstreetmap' and cfg.lat and cfg.lng %}
+    {% set lat = cfg.lat %}{% set lng = cfg.lng %}
     <iframe class="map-embed__frame" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
             title="{{ _('Map') }}"
             src="https://www.openstreetmap.org/export/embed.html?bbox={{ (lng | float) - 0.004 }}%2C{{ (lat | float) - 0.002 }}%2C{{ (lng | float) + 0.004 }}%2C{{ (lat | float) + 0.002 }}&layer=mapnik&marker={{ lat }}%2C{{ lng }}"></iframe>
     {% else %}
     <iframe class="map-embed__frame" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
             title="{{ _('Map') }}"
-            src="https://maps.google.com/maps?q={{ config.get('MAP_QUERY') | urlencode }}&t=m&z={{ config.get('MAP_ZOOM', '16') }}&output=embed&iwloc=near"></iframe>
+            src="https://maps.google.com/maps?q={{ cfg.query | urlencode }}&t=m&z={{ cfg.zoom }}&output=embed&iwloc=near"></iframe>
     {% endif %}
-    {% if config.get('MAP_ADDRESS') %}
-    <p class="map-embed__address">{{ config.get('MAP_ADDRESS') }}</p>
+    {% if cfg.address %}
+    <p class="map-embed__address">{{ cfg.address }}</p>
     {% endif %}
 </section>
 
