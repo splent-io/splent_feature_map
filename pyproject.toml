@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "splent_feature_map"
-version = "0.0.1"
+version = "0.1.0"
 readme = "README.md"
 requires-python = ">=3.13"
 
@@ -23,37 +23,38 @@ exclude = ["*.tests", "*.tests.*"]
 [tool.splent]
 cli_version = "1.21.0"
 
-# ── Feature Contract ──────────────────────────────────────────────────────────
-# Declares what this feature provides to and requires from the product.
-# Used by `splent feature:check` and `splent product:derive` for validation.
+# ── Feature Contract (auto-generated) ────────────────────────────────────────
+# Do not edit manually — re-run `splent feature:contract --write` to refresh.
+# Preserved across refreshes: description, category, tags, env,
+# requires.features_manual (dependencies invisible to static analysis)
+# and provides.routes_manual (routes built from configuration at
+# registration time, which have no literal path to find in source).
 [tool.splent.contract]
 description = "map feature"
+archetype = "config"
 
 [tool.splent.contract.provides]
-# Routes exposed by this feature
 routes     = []
-# Blueprint names registered into Flask
-blueprints = ["map_bp"]
-# SQLAlchemy models introduced by this feature
-models = []
-# CLI commands added by this feature
-commands = []
+blueprints = []
+models     = []
+commands   = []
+hooks      = ["contact.map"]
+services   = []
+signals    = []
+translations = ["es"]
+docker     = []
 
 [tool.splent.contract.requires]
-# Other SPLENT features this feature depends on (e.g. ["auth", "mail"])
 features = []
-# Environment variables this feature expects to be set
-env_vars = []
+env_vars = ["MAP_ADDRESS", "MAP_LAT", "MAP_LNG", "MAP_PROVIDER", "MAP_QUERY", "MAP_ZOOM"]
+signals  = []
 
-# ── Extension points ──────────────────────────────────────────────────────────
-# Declares what other features can override or extend via refinement.
-# See: splent feature:xray
 [tool.splent.contract.extensible]
-services = []
-templates = []
-models = []
-hooks      = ["contact.map"]
-routes = false
+services  = []
+templates = ["map/embed.html"]
+models    = []
+hooks     = ["contact.map"]
+routes    = false
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 # What this feature reads from the environment, and what it falls back to.
